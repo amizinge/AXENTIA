@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Analytics - Axentia Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <link href="https://unpkg.com/splitting@1.0.6/dist/splitting.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="mobile-responsive.css">
+    <style>
+        :root {
+            --primary-dark: #1a1a1a;
+            --secondary-gold: #d4af37;
+            --tertiary-silver: #c0c0c0;
+            --success-green: #228b22;
+            --danger-red: #dc143c;
+            --neutral-gray: #708090;
+            --background-black: #0d0d0d;
+            --steel-gray: #2a2a2a;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--background-black) 0%, var(--primary-dark) 100%);
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--secondary-gold) 0%, var(--tertiary-silver) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            background: rgba(26, 26, 26, 0.8);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .analytics-card {
+            background: linear-gradient(145deg, rgba(42, 42, 42, 0.9) 0%, rgba(26, 26, 26, 0.9) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .analytics-card:hover {
+            border-color: var(--secondary-gold);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        }
+        
+        .market-ticker {
+            background: linear-gradient(90deg, var(--background-black) 0%, var(--primary-dark) 50%, var(--background-black) 100%);
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        .price-positive {
+            color: var(--success-green);
+        }
+        
+        .price-negative {
+            color: var(--danger-red);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-gold) 0%, #b8941f 100%);
+            color: var(--background-black);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--steel-gray) 0%, var(--primary-dark) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--secondary-gold);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(42, 42, 42, 0.9) 100%);
+        }
+        
+        .news-ticker {
+            animation: scroll-left 60s linear infinite;
+        }
+        
+        @keyframes scroll-left {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        .chart-container {
+            height: 400px;
+            background: rgba(42, 42, 42, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .scanner-item {
+            background: rgba(42, 42, 42, 0.6);
+            border-left: 3px solid var(--secondary-gold);
+            transition: all 0.3s ease;
+        }
+        
+        .scanner-item:hover {
+            background: rgba(212, 175, 55, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .impact-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .impact-high {
+            background: var(--danger-red);
+            color: white;
+        }
+        
+        .impact-medium {
+            background: #ffa500;
+            color: white;
+        }
+        
+        .impact-low {
+            background: var(--success-green);
+            color: white;
+        }
+        
+        .sentiment-positive {
+            color: var(--success-green);
+        }
+        
+        .sentiment-negative {
+            color: var(--danger-red);
+        }
+        
+        .sentiment-neutral {
+            color: var(--neutral-gray);
+        }
+        
+        .font-display { font-family: 'Playfair Display', serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .font-accent { font-family: 'Crimson Text', serif; }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            background: var(--steel-gray);
+            color: #ffffff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .filter-btn.active {
+            background: var(--secondary-gold);
+            color: var(--background-black);
+            border-color: var(--secondary-gold);
+        }
+        
+        .filter-btn:hover {
+            border-color: var(--secondary-gold);
+        }
+        
+        .correlation-cell {
+            text-align: center;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .correlation-strong {
+            background: var(--danger-red);
+            color: white;
+        }
+        
+        .correlation-moderate {
+            background: #ffa500;
+            color: white;
+        }
+        
+        .correlation-weak {
+            background: var(--success-green);
+            color: white;
+        }
+        
+        .volatility-meter {
+            height: 6px;
+            background: linear-gradient(90deg, var(--success-green) 0%, #ffa500 50%, var(--danger-red) 100%);
+            border-radius: 3px;
+            position: relative;
+        }
+        
+        .volatility-indicator {
+            position: absolute;
+            top: -2px;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            border: 2px solid var(--background-black);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="glass-nav fixed w-full top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <h1 class="text-2xl font-display font-bold gradient-text">AXENTIA</h1>
+                <span class="text-sm text-gray-400 font-accent">Professional Trading Platform</span>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="index.html" class="text-gray-300 hover:text-yellow-300 transition-colors font-medium">Dashboard</a>
+                <a href="trading.html" class="text-gray-300 hover:text-yellow-300 transition-colors font-medium">Trading</a>
+                <a href="portfolio.html" class="text-gray-300 hover:text-yellow-300 transition-colors font-medium">Portfolio</a>
+                <a href="analytics.html" class="text-yellow-400 hover:text-yellow-300 transition-colors font-medium border-b-2 border-yellow-400">Analytics</a>
+            </div>
+            
+            <!-- Mobile Navigation Links -->
+            <div class="nav-links md:hidden">
+                <a href="index.html" class="block py-2 text-gray-300 hover:text-white transition-colors font-medium">Dashboard</a>
+                <a href="trading.html" class="block py-2 text-gray-300 hover:text-white transition-colors font-medium">Trading</a>
+                <a href="portfolio.html" class="block py-2 text-gray-300 hover:text-white transition-colors font-medium">Portfolio</a>
+                <a href="analytics.html" class="block py-2 text-yellow-400 hover:text-yellow-300 transition-colors font-medium">Analytics</a>
+                <a href="advanced-features.html" class="block py-2 text-gray-300 hover:text-white transition-colors font-medium">Advanced</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-right">
+                    <div class="text-sm font-mono text-green-400">$127,543.21</div>
+                    <div class="text-xs text-gray-400">Portfolio Value</div>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center">
+                    <span class="text-black font-bold text-sm">JD</span>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn md:hidden text-white focus:outline-none touch-target">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Market Ticker -->
+    <div class="market-ticker fixed w-full top-20 z-40 py-2 overflow-hidden">
+        <div class="news-ticker whitespace-nowrap">
+            <span class="inline-block mx-8 text-sm">BTC/USD <span class="price-positive">$43,567.89 (+2.34%)</span></span>
+            <span class="inline-block mx-8 text-sm">ETH/USD <span class="price-positive">$2,654.32 (+1.87%)</span></span>
+            <span class="inline-block mx-8 text-sm">EUR/USD <span class="price-negative">1.0876 (-0.12%)</span></span>
+            <span class="inline-block mx-8 text-sm">GBP/USD <span class="price-positive">1.2654 (+0.45%)</span></span>
+            <span class="inline-block mx-8 text-sm">USD/JPY <span class="price-negative">149.23 (-0.08%)</span></span>
+            <span class="inline-block mx-8 text-sm">XAU/USD <span class="price-positive">$2,034.56 (+0.67%)</span></span>
+        </div>
+    </div>
+
+    <!-- Analytics Dashboard -->
+    <section class="pt-32 pb-16 px-6">
+        <div class="max-w-7xl mx-auto">
+            <!-- Analytics Header -->
+            <div class="mb-8">
+                <h2 class="text-4xl font-display font-bold mb-2">
+                    <span class="gradient-text">Market Analytics</span>
+                </h2>
+                <p class="text-gray-400">Advanced market intelligence and trading insights</p>
+            </div>
+
+            <!-- Analytics Filters -->
+            <div class="flex flex-wrap gap-2 mb-8">
+                <button class="filter-btn active" data-filter="all">All Markets</button>
+                <button class="filter-btn" data-filter="crypto">Cryptocurrency</button>
+                <button class="filter-btn" data-filter="forex">Forex</button>
+                <button class="filter-btn" data-filter="commodities">Commodities</button>
+                <button class="filter-btn" data-filter="indices">Indices</button>
+            </div>
+
+            <!-- Main Analytics Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left Panel - Market Scanner -->
+                <div class="lg:col-span-2">
+                    <div class="analytics-card p-6 rounded-lg mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-semibold text-white">Advanced Market Scanner</h3>
+                            <div class="flex space-x-2">
+                                <button class="btn-secondary px-3 py-1 rounded text-sm">Customize Filters</button>
+                                <button class="btn-primary px-3 py-1 rounded text-sm">Export Results</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Scanner Results -->
+                        <div class="space-y-3 max-h-96 overflow-y-auto">
+                            <div class="scanner-item p-4 rounded">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="font-bold text-white">BTC/USD</span>
+                                        <span class="impact-badge impact-high">High Volatility</span>
+                                        <span class="sentiment-positive">Bullish</span>
+                                    </div>
+                                    <span class="font-mono text-white">$43,567.89</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4 text-sm">
+                                    <div>
+                                        <span class="text-gray-400">24h Change:</span>
+                                        <span class="price-positive ml-2">+2.34%</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-400">Volume:</span>
+                                        <span class="text-white ml-2">$1.2B</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-400">RSI:</span>
+                                        <span class="text-white ml-2">67.3</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="volatility-meter">
+                                        <div class="volatility-indicator" style="left: 75%;"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs mt-1">
+                                        <span>Low</span>
+                                        <span>High</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="scanner-item p-4 rounded">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="font-bold text-white">ETH/USD</span>
+                                        <span class="impact-badge impact-medium">Medium Volatility</span>
+                                        <span class="sentiment-positive">Bullish</span>
+                                    </div>
+                                    <span class="font-mono text-white">$2,654.32</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4 text-sm">
+                                    <div>
+                                        <span class="text-gray-400">24h Change:</span>
+                                        <span class="price-positive ml-2">+1.87%</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-400">Volume:</span>
+                                        <span class="text-white ml-2">$892M</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-400">RSI:</span>
+                                        <span class="text-white ml-2">58.9</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="volatility-meter">
+                                        <div class="volatility-indicator" style="left: 45%;"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs mt-1">
+                                        <span>Low</span>
+                                        <span>High</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="scanner-item p-4 rounded">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="font-bold text-white">EUR/USD</span>
+                                        <span class="impact-badge impact-low">Low Volatility</span>
+                                        <span class="sentiment-negative">Bearish</span>
+                                    </div>
+                                    <span class="font-mono text-white">1.0876</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4 text-sm">
+                                    <div>
+                                        <span class="text-gray-400">24h Change:</span>
+                                        <span class="price-negative ml-2">-0.12%</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-400">Volume:</span>
+                                        <span class="text-white ml-2">$2.1B</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-400">RSI:</span>
+                                        <span class="text-white ml-2">42.1</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="volatility-meter">
+                                        <div class="volatility-indicator" style="left: 25%;"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs mt-1">
+                                        <span>Low</span>
+                                        <span>High</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="scanner-item p-4 rounded">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="font-bold text-white">GBP/USD</span>
+                                        <span class="impact-badge impact-medium">Medium Volatility</span>
+                                        <span class="sentiment-positive">Bullish</span>
+                                    </div>
+                                    <span class="font-mono text-white">1.2654</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4 text-sm">
+                                    <div>
+                                        <span class="text-gray-400">24h Change:</span>
+                                        <span class="price-positive ml-2">+0.45%</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-400">Volume:</span>
+                                        <span class="text-white ml-2">$1.8B</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-400">RSI:</span>
+                                        <span class="text-white ml-2">61.2</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="volatility-meter">
+                                        <div class="volatility-indicator" style="left: 55%;"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs mt-1">
+                                        <span>Low</span>
+                                        <span>High</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="scanner-item p-4 rounded">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="font-bold text-white">XAU/USD</span>
+                                        <span class="impact-badge impact-high">High Volatility</span>
+                                        <span class="sentiment-positive">Bullish</span>
+                                    </div>
+                                    <span class="font-mono text-white">$2,034.56</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4 text-sm">
+                                    <div>
+                                        <span class="text-gray-400">24h Change:</span>
+                                        <span class="price-positive ml-2">+0.67%</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-400">Volume:</span>
+                                        <span class="text-white ml-2">$567M</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-400">RSI:</span>
+                                        <span class="text-white ml-2">72.1</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="volatility-meter">
+                                        <div class="volatility-indicator" style="left: 80%;"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs mt-1">
+                                        <span>Low</span>
+                                        <span>High</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Correlation Matrix -->
+                    <div class="analytics-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-4 text-white">Asset Correlation Matrix</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs">
+                                <thead>
+                                    <tr>
+                                        <th class="text-left text-gray-400 p-2">Asset</th>
+                                        <th class="text-center text-gray-400 p-2">BTC</th>
+                                        <th class="text-center text-gray-400 p-2">ETH</th>
+                                        <th class="text-center text-gray-400 p-2">EUR/USD</th>
+                                        <th class="text-center text-gray-400 p-2">GBP/USD</th>
+                                        <th class="text-center text-gray-400 p-2">XAU/USD</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-white p-2 font-medium">BTC/USD</td>
+                                        <td class="correlation-cell correlation-strong">1.00</td>
+                                        <td class="correlation-cell correlation-strong">0.85</td>
+                                        <td class="correlation-cell correlation-weak">0.23</td>
+                                        <td class="correlation-cell correlation-weak">0.31</td>
+                                        <td class="correlation-cell correlation-moderate">0.67</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-white p-2 font-medium">ETH/USD</td>
+                                        <td class="correlation-cell correlation-strong">0.85</td>
+                                        <td class="correlation-cell correlation-strong">1.00</td>
+                                        <td class="correlation-cell correlation-weak">0.19</td>
+                                        <td class="correlation-cell correlation-weak">0.28</td>
+                                        <td class="correlation-cell correlation-moderate">0.58</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-white p-2 font-medium">EUR/USD</td>
+                                        <td class="correlation-cell correlation-weak">0.23</td>
+                                        <td class="correlation-cell correlation-weak">0.19</td>
+                                        <td class="correlation-cell correlation-strong">1.00</td>
+                                        <td class="correlation-cell correlation-strong">0.78</td>
+                                        <td class="correlation-cell correlation-weak">0.34</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-white p-2 font-medium">GBP/USD</td>
+                                        <td class="correlation-cell correlation-weak">0.31</td>
+                                        <td class="correlation-cell correlation-weak">0.28</td>
+                                        <td class="correlation-cell correlation-strong">0.78</td>
+                                        <td class="correlation-cell correlation-strong">1.00</td>
+                                        <td class="correlation-cell correlation-weak">0.29</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-white p-2 font-medium">XAU/USD</td>
+                                        <td class="correlation-cell correlation-moderate">0.67</td>
+                                        <td class="correlation-cell correlation-moderate">0.58</td>
+                                        <td class="correlation-cell correlation-weak">0.34</td>
+                                        <td class="correlation-cell correlation-weak">0.29</td>
+                                        <td class="correlation-cell correlation-strong">1.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4 text-xs text-gray-400">
+                            <p>Correlation values range from -1 (perfect negative correlation) to +1 (perfect positive correlation)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel - Market Intelligence -->
+                <div class="lg:col-span-1">
+                    <!-- Economic Calendar -->
+                    <div class="analytics-card p-6 rounded-lg mb-6">
+                        <h3 class="text-lg font-semibold mb-4 text-white">Economic Calendar</h3>
+                        <div class="space-y-3 max-h-80 overflow-y-auto">
+                            <div class="border-l-4 border-red-500 pl-3 py-2">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-white text-sm">Fed Interest Rate Decision</span>
+                                    <span class="impact-badge impact-high">High</span>
+                                </div>
+                                <div class="text-xs text-gray-400 mb-1">14:00 EST - Expected: 5.50%</div>
+                                <div class="text-xs text-gray-400">Previous: 5.50%</div>
+                            </div>
+                            
+                            <div class="border-l-4 border-orange-500 pl-3 py-2">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-white text-sm">Non-Farm Payrolls</span>
+                                    <span class="impact-badge impact-high">High</span>
+                                </div>
+                                <div class="text-xs text-gray-400 mb-1">08:30 EST - Expected: 185K</div>
+                                <div class="text-xs text-gray-400">Previous: 173K</div>
+                            </div>
+                            
+                            <div class="border-l-4 border-green-500 pl-3 py-2">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-white text-sm">CPI Data</span>
+                                    <span class="impact-badge impact-medium">Medium</span>
+                                </div>
+                                <div class="text-xs text-gray-400 mb-1">08:30 EST - Expected: 3.2%</div>
+                                <div class="text-xs text-gray-400">Previous: 3.1%</div>
+                            </div>
+                            
+                            <div class="border-l-4 border-blue-500 pl-3 py-2">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-white text-sm">Retail Sales</span>
+                                    <span class="impact-badge impact-low">Low</span>
+                                </div>
+                                <div class="text-xs text-gray-400 mb-1">08:30 EST - Expected: 0.4%</div>
+                                <div class="text-xs text-gray-400">Previous: 0.3%</div>
+                            </div>
+                            
+                            <div class="border-l-4 border-purple-500 pl-3 py-2">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-white text-sm">University of Michigan Sentiment</span>
+                                    <span class="impact-badge impact-low">Low</span>
+                                </div>
+                                <div class="text-xs text-gray-400 mb-1">10:00 EST - Expected: 68.5</div>
+                                <div class="text-xs text-gray-400">Previous: 67.8</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Market Sentiment -->
+                    <div class="analytics-card p-6 rounded-lg mb-6">
+                        <h3 class="text-lg font-semibold mb-4 text-white">Market Sentiment</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-gray-400 text-sm">Crypto Fear & Greed Index</span>
+                                    <span class="font-mono text-white">72</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-green-400 h-2 rounded-full" style="width: 72%"></div>
+                                </div>
+                                <div class="text-xs text-center mt-1 sentiment-positive">Greed</div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-gray-400 text-sm">VIX (Fear Index)</span>
+                                    <span class="font-mono text-white">18.45</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-yellow-400 h-2 rounded-full" style="width: 45%"></div>
+                                </div>
+                                <div class="text-xs text-center mt-1">Moderate Fear</div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-gray-400 text-sm">Put/Call Ratio</span>
+                                    <span class="font-mono text-white">0.85</span>
+                                </div>
+                                <div class="w-full bg-gray-700 rounded-full h-2">
+                                    <div class="bg-green-400 h-2 rounded-full" style="width: 65%"></div>
+                                </div>
+                                <div class="text-xs text-center mt-1 sentiment-positive">Bullish</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Trading Signals -->
+                    <div class="analytics-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-4 text-white">AI Trading Signals</h3>
+                        <div class="space-y-3">
+                            <div class="border-l-4 border-green-500 pl-3 py-2">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-white text-sm">BTC/USD</span>
+                                    <span class="text-xs bg-green-500 text-white px-2 py-1 rounded">BUY</span>
+                                </div>
+                                <div class="text-xs text-gray-400 mb-1">Entry: $43,500 | Target: $45,200</div>
+                                <div class="text-xs text-gray-400">Stop Loss: $42,800 | Confidence: 85%</div>
+                            </div>
+                            
+                            <div class="border-l-4 border-red-500 pl-3 py-2">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-white text-sm">EUR/USD</span>
+                                    <span class="text-xs bg-red-500 text-white px-2 py-1 rounded">SELL</span>
+                                </div>
+                                <div class="text-xs text-gray-400 mb-1">Entry: 1.0880 | Target: 1.0820</div>
+                                <div class="text-xs text-gray-400">Stop Loss: 1.0920 | Confidence: 72%</div>
+                            </div>
+                            
+                            <div class="border-l-4 border-yellow-500 pl-3 py-2">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-white text-sm">ETH/USD</span>
+                                    <span class="text-xs bg-yellow-500 text-white px-2 py-1 rounded">HOLD</span>
+                                </div>
+                                <div class="text-xs text-gray-400 mb-1">Current: $2,654 | Watch: $2,700</div>
+                                <div class="text-xs text-gray-400">Signal strength: Moderate</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 pt-4 border-t border-gray-700">
+                            <div class="text-xs text-gray-400 mb-2">Signal Performance (Last 30 Days)</div>
+                            <div class="flex justify-between text-sm">
+                                <span>Win Rate:</span>
+                                <span class="font-mono text-green-400">73.4%</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Avg Return:</span>
+                                <span class="font-mono text-green-400">+4.2%</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Max Drawdown:</span>
+                                <span class="font-mono text-red-400">-2.1%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black bg-opacity-50 py-8 px-6 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="mb-4">
+                <h3 class="text-2xl font-display font-bold gradient-text mb-2">AXENTIA</h3>
+                <p class="text-gray-400 text-sm">Professional Crypto-Forex Trading Platform</p>
+            </div>
+            <div class="text-gray-500 text-xs">
+                <p>&copy; 2025 Axentia Trading Platform. All rights reserved.</p>
+                <p class="mt-1">Risk Warning: Trading leveraged products involves substantial risk of loss.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>

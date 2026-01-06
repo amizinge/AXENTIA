@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Features - Axentia Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="mobile-responsive.css">
+    <style>
+        :root {
+            --primary-dark: #1a1a1a;
+            --secondary-gold: #d4af37;
+            --tertiary-silver: #c0c0c0;
+            --success-green: #228b22;
+            --danger-red: #dc143c;
+            --neutral-gray: #708090;
+            --background-black: #0d0d0d;
+            --steel-gray: #2a2a2a;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--background-black) 0%, var(--primary-dark) 100%);
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--secondary-gold) 0%, var(--tertiary-silver) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            background: rgba(26, 26, 26, 0.8);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .feature-card {
+            background: linear-gradient(145deg, rgba(42, 42, 42, 0.9) 0%, rgba(26, 26, 26, 0.9) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            border-color: var(--secondary-gold);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .market-ticker {
+            background: linear-gradient(90deg, var(--background-black) 0%, var(--primary-dark) 50%, var(--background-black) 100%);
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        .price-positive {
+            color: var(--success-green);
+        }
+        
+        .price-negative {
+            color: var(--danger-red);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-gold) 0%, #b8941f 100%);
+            color: var(--background-black);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--steel-gray) 0%, var(--primary-dark) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--secondary-gold);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(42, 42, 42, 0.9) 100%);
+        }
+        
+        .news-ticker {
+            animation: scroll-left 60s linear infinite;
+        }
+        
+        @keyframes scroll-left {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        .chart-container {
+            height: 400px;
+            background: rgba(42, 42, 42, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .strategy-card {
+            background: rgba(42, 42, 42, 0.6);
+            border-left: 3px solid var(--secondary-gold);
+            transition: all 0.3s ease;
+        }
+        
+        .strategy-card:hover {
+            background: rgba(212, 175, 55, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .tutorial-step {
+            background: linear-gradient(145deg, rgba(42, 42, 42, 0.8) 0%, rgba(26, 26, 26, 0.8) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .font-display { font-family: 'Playfair Display', serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .font-accent { font-family: 'Crimson Text', serif; }
+        
+        .splide__slide {
+            padding: 0 10px;
+        }
+        
+        .splide__arrow {
+            background: var(--secondary-gold);
+            border: none;
+        }
+        
+        .splide__arrow svg {
+            fill: var(--background-black);
+        }
+        
+        .bot-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .bot-status.active {
+            background: var(--success-green);
+            box-shadow: 0 0 10px var(--success-green);
+        }
+        
+        .bot-status.inactive {
+            background: var(--neutral-gray);
+        }
+        
+        .bot-status.error {
+            background: var(--danger-red);
+            box-shadow: 0 0 10px var(--danger-red);
+        }
+        
+        .risk-level-low { color: var(--success-green); }
+        .risk-level-medium { color: #ffa500; }
+        .risk-level-high { color: var(--danger-red); }
+        
+        .performance-excellent { color: var(--success-green); }
+        .performance-good { color: #ffa500; }
+        .performance-poor { color: var(--danger-red); }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="glass-nav fixed w-full top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <h1 class="text-2xl font-display font-bold gradient-text">AXENTIA</h1>
+                <span class="text-sm text-gray-400 font-accent">Professional Trading Platform</span>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="index.html" class="text-gray-300 hover:text-yellow-300 transition-colors font-medium">Dashboard</a>
+                <a href="trading.html" class="text-gray-300 hover:text-yellow-300 transition-colors font-medium">Trading</a>
+                <a href="portfolio.html" class="text-gray-300 hover:text-yellow-300 transition-colors font-medium">Portfolio</a>
+                <a href="analytics.html" class="text-gray-300 hover:text-yellow-300 transition-colors font-medium">Analytics</a>
+                <a href="advanced-features.html" class="text-yellow-400 hover:text-yellow-300 transition-colors font-medium border-b-2 border-yellow-400">Advanced</a>
+            </div>
+            
+            <!-- Mobile Navigation Links -->
+            <div class="nav-links md:hidden">
+                <a href="index.html" class="block py-2 text-gray-300 hover:text-white transition-colors font-medium">Dashboard</a>
+                <a href="trading.html" class="block py-2 text-gray-300 hover:text-white transition-colors font-medium">Trading</a>
+                <a href="portfolio.html" class="block py-2 text-gray-300 hover:text-white transition-colors font-medium">Portfolio</a>
+                <a href="analytics.html" class="block py-2 text-gray-300 hover:text-white transition-colors font-medium">Analytics</a>
+                <a href="advanced-features.html" class="block py-2 text-yellow-400 hover:text-yellow-300 transition-colors font-medium">Advanced</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-right">
+                    <div class="text-sm font-mono text-green-400">$127,543.21</div>
+                    <div class="text-xs text-gray-400">Portfolio Value</div>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center">
+                    <span class="text-black font-bold text-sm">JD</span>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn md:hidden text-white focus:outline-none touch-target">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Market Ticker -->
+    <div class="market-ticker fixed w-full top-20 z-40 py-2 overflow-hidden">
+        <div class="news-ticker whitespace-nowrap">
+            <span class="inline-block mx-8 text-sm">BTC/USD <span class="price-positive">$43,567.89 (+2.34%)</span></span>
+            <span class="inline-block mx-8 text-sm">ETH/USD <span class="price-positive">$2,654.32 (+1.87%)</span></span>
+            <span class="inline-block mx-8 text-sm">EUR/USD <span class="price-negative">1.0876 (-0.12%)</span></span>
+            <span class="inline-block mx-8 text-sm">GBP/USD <span class="price-positive">$1.2654 (+0.45%)</span></span>
+            <span class="inline-block mx-8 text-sm">USD/JPY <span class="price-negative">149.23 (-0.08%)</span></span>
+            <span class="inline-block mx-8 text-sm">XAU/USD <span class="price-positive">$2,034.56 (+0.67%)</span></span>
+        </div>
+    </nav>
+
+    <!-- Advanced Features Header -->
+    <section class="pt-32 pb-16 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-display font-bold mb-6">
+                    <span class="gradient-text">Advanced Features</span>
+                </h2>
+                <p class="text-xl text-gray-300 mb-8">Professional trading tools, automated strategies, and educational resources</p>
+                
+                <!-- Feature Categories -->
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button class="btn-primary px-6 py-3 rounded-lg" onclick="scrollToSection('automated-trading')">
+                        🤖 Automated Trading
+                    </button>
+                    <button class="btn-secondary px-6 py-3 rounded-lg" onclick="scrollToSection('social-trading')">
+                        👥 Social Trading
+                    </button>
+                    <button class="btn-secondary px-6 py-3 rounded-lg" onclick="scrollToSection('education')">
+                        📚 Education Center
+                    </button>
+                    <button class="btn-secondary px-6 py-3 rounded-lg" onclick="scrollToSection('api-integration')">
+                        🔌 API Integration
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Automated Trading Section -->
+    <section id="automated-trading" class="px-6 pb-16">
+        <div class="max-w-7xl mx-auto">
+            <h3 class="text-3xl font-display font-bold mb-8 text-center">
+                <span class="gradient-text">Automated Trading Bots</span>
+            </h3>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+                <!-- Bot Management -->
+                <div class="feature-card p-6 rounded-lg">
+                    <h4 class="text-xl font-semibold mb-4 text-white">Trading Bot Manager</h4>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-gray-800 rounded">
+                            <div class="flex items-center space-x-3">
+                                <div class="bot-status active"></div>
+                                <div>
+                                    <div class="font-medium text-white">SMA Crossover Bot</div>
+                                    <div class="text-sm text-gray-400">BTC/USD • 15m</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-mono text-green-400 text-sm">+12.4%</div>
+                                <div class="text-xs text-gray-400">24h Return</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-800 rounded">
+                            <div class="flex items-center space-x-3">
+                                <div class="bot-status active"></div>
+                                <div>
+                                    <div class="font-medium text-white">RSI Mean Reversion</div>
+                                    <div class="text-sm text-gray-400">ETH/USD • 1h</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-mono text-green-400 text-sm">+8.7%</div>
+                                <div class="text-xs text-gray-400">24h Return</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-800 rounded">
+                            <div class="flex items-center space-x-3">
+                                <div class="bot-status inactive"></div>
+                                <div>
+                                    <div class="font-medium text-white">MACD Signal Bot</div>
+                                    <div class="text-sm text-gray-400">EUR/USD • 4h</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-mono text-gray-400 text-sm">Stopped</div>
+                                <div class="text-xs text-gray-400">Status</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 flex space-x-2">
+                        <button class="btn-primary flex-1 py-2 rounded text-sm">Create New Bot</button>
+                        <button class="btn-secondary flex-1 py-2 rounded text-sm">View All Bots</button>
+                    </div>
+                </div>
+                
+                <!-- Strategy Builder -->
+                <div class="feature-card p-6 rounded-lg">
+                    <h4 class="text-xl font-semibold mb-4 text-white">Visual Strategy Builder</h4>
+                    <div class="space-y-4">
+                        <div class="tutorial-step p-4 rounded">
+                            <h5 class="font-medium text-white mb-2">1. Select Indicators</h5>
+                            <p class="text-sm text-gray-400">Choose from 50+ technical indicators and combine them into custom strategies.</p>
+                        </div>
+                        
+                        <div class="tutorial-step p-4 rounded">
+                            <h5 class="font-medium text-white mb-2">2. Define Entry Rules</h5>
+                            <p class="text-sm text-gray-400">Set precise entry conditions using logical operators and timeframes.</p>
+                        </div>
+                        
+                        <div class="tutorial-step p-4 rounded">
+                            <h5 class="font-medium text-white mb-2">3. Configure Risk Management</h5>
+                            <p class="text-sm text-gray-400">Set stop-loss, take-profit, and position sizing rules automatically.</p>
+                        </div>
+                        
+                        <div class="tutorial-step p-4 rounded">
+                            <h5 class="font-medium text-white mb-2">4. Backtest & Deploy</h5>
+                            <p class="text-sm text-gray-400">Test your strategy with historical data before going live.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button class="btn-primary w-full py-2 rounded text-sm">Launch Strategy Builder</button>
+                    </div>
+                </div>
+                
+                <!-- Performance Analytics -->
+                <div class="feature-card p-6 rounded-lg">
+                    <h4 class="text-xl font-semibold mb-4 text-white">Bot Performance</h4>
+                    <div class="space-y-4">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold font-mono text-green-400 mb-1">+47.3%</div>
+                            <div class="text-sm text-gray-400">Total Bot Return (30 Days)</div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div class="text-center">
+                                <div class="font-mono text-white">73.4%</div>
+                                <div class="text-gray-400">Win Rate</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="font-mono text-white">1.85</div>
+                                <div class="text-gray-400">Profit Factor</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="font-mono text-white">-2.1%</div>
+                                <div class="text-gray-400">Max Drawdown</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="font-mono text-white">156</div>
+                                <div class="text-gray-400">Total Trades</div>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-4 border-t border-gray-700">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-400">Best Strategy</span>
+                                <span class="text-white">SMA Crossover</span>
+                            </div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-400">Best Pair</span>
+                                <span class="text-white">BTC/USD</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-400">Active Since</span>
+                                <span class="text-white">45 days ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Strategy Templates -->
+            <div class="feature-card p-6 rounded-lg">
+                <h4 class="text-xl font-semibold mb-6 text-white">Popular Strategy Templates</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="strategy-card p-4 rounded">
+                        <h5 class="font-medium text-white mb-2">Moving Average Crossover</h5>
+                        <p class="text-sm text-gray-400 mb-3">Classic trend-following strategy using fast and slow moving averages.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="risk-level-medium text-xs">Medium Risk</span>
+                            <span class="performance-excellent text-xs">+15.2%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="strategy-card p-4 rounded">
+                        <h5 class="font-medium text-white mb-2">RSI Mean Reversion</h5>
+                        <p class="text-sm text-gray-400 mb-3">Counter-trend strategy that buys oversold and sells overbought conditions.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="risk-level-low text-xs">Low Risk</span>
+                            <span class="performance-good text-xs">+8.7%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="strategy-card p-4 rounded">
+                        <h5 class="font-medium text-white mb-2">Bollinger Band Breakout</h5>
+                        <p class="text-sm text-gray-400 mb-3">Momentum strategy that trades breakouts from volatility bands.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="risk-level-high text-xs">High Risk</span>
+                            <span class="performance-excellent text-xs">+22.1%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="strategy-card p-4 rounded">
+                        <h5 class="font-medium text-white mb-2">MACD Divergence</h5>
+                        <p class="text-sm text-gray-400 mb-3">Advanced pattern recognition strategy based on MACD divergences.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="risk-level-medium text-xs">Medium Risk</span>
+                            <span class="performance-good text-xs">+11.4%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 text-center">
+                    <button class="btn-primary px-6 py-3 rounded-lg">Browse All Templates</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Trading Section -->
+    <section id="social-trading" class="px-6 pb-16">
+        <div class="max-w-7xl mx-auto">
+            <h3 class="text-3xl font-display font-bold mb-8 text-center">
+                <span class="gradient-text">Social Trading Network</span>
+            </h3>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+                <!-- Top Traders -->
+                <div class="feature-card p-6 rounded-lg">
+                    <h4 class="text-xl font-semibold mb-4 text-white">Top Performing Traders</h4>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-gray-800 rounded">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center">
+                                    <span class="text-white font-bold text-sm">MR</span>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-white">MarcusTrader</div>
+                                    <div class="text-sm text-gray-400">Pro Trader • 2.3K Followers</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-mono text-green-400 text-sm">+127.3%</div>
+                                <div class="text-xs text-gray-400">30d Return</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-800 rounded">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center">
+                                    <span class="text-white font-bold text-sm">AS</span>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-white">AnnaSignals</div>
+                                    <div class="text-sm text-gray-400">Expert • 1.8K Followers</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-mono text-green-400 text-sm">+89.4%</div>
+                                <div class="text-xs text-gray-400">30d Return</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-800 rounded">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-purple-400 to-purple-600 flex items-center justify-center">
+                                    <span class="text-white font-bold text-sm">CT</span>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-white">CryptoTech</div>
+                                    <div class="text-sm text-gray-400">Advanced • 3.1K Followers</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-mono text-green-400 text-sm">+76.8%</div>
+                                <div class="text-xs text-gray-400">30d Return</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button class="btn-primary w-full py-2 rounded text-sm">Follow Top Traders</button>
+                    </div>
+                </div>
+                
+                <!-- Copy Trading -->
+                <div class="feature-card p-6 rounded-lg">
+                    <h4 class="text-xl font-semibold mb-4 text-white">Copy Trading Setup</h4>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Select Trader to Copy</label>
+                            <select class="w-full p-3 bg-gray-800 border border-gray-600 rounded text-white">
+                                <option>MarcusTrader (+127.3%)</option>
+                                <option>AnnaSignals (+89.4%)</option>
+                                <option>CryptoTech (+76.8%)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-2">Investment Amount</label>
+                                <input type="number" placeholder="$1,000" class="w-full p-3 bg-gray-800 border border-gray-600 rounded text-white font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-2">Max Loss (%)</label>
+                                <input type="number" placeholder="10" class="w-full p-3 bg-gray-800 border border-gray-600 rounded text-white font-mono">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Copy Mode</label>
+                            <div class="flex space-x-2">
+                                <button class="btn-primary flex-1 py-2 rounded text-sm">Proportional</button>
+                                <button class="btn-secondary flex-1 py-2 rounded text-sm">Fixed Size</button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-800 p-4 rounded">
+                            <h5 class="font-medium text-white mb-2">Copy Trading Terms</h5>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>• Performance fee: 15% of profits</li>
+                                <li>• Minimum investment: $100</li>
+                                <li>• Auto-stop at -20% loss</li>
+                                <li>• Real-time trade copying</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button class="btn-primary w-full py-2 rounded text-sm">Start Copy Trading</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Community Features -->
+            <div class="feature-card p-6 rounded-lg">
+                <h4 class="text-xl font-semibold mb-6 text-white">Trading Community</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="text-4xl mb-4">📈</div>
+                        <h5 class="font-semibold text-white mb-2">Market Discussions</h5>
+                        <p class="text-sm text-gray-400">Join conversations about market trends, analysis, and trading opportunities.</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="text-4xl mb-4">🏆</div>
+                        <h5 class="font-semibold text-white mb-2">Trading Contests</h5>
+                        <p class="text-sm text-gray-400">Participate in monthly trading competitions with real prizes and recognition.</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="text-4xl mb-4">💡</div>
+                        <h5 class="font-semibold text-white mb-2">Strategy Sharing</h5>
+                        <p class="text-sm text-gray-400">Share your successful strategies and learn from other experienced traders.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Center Section -->
+    <section id="education" class="px-6 pb-16">
+        <div class="max-w-7xl mx-auto">
+            <h3 class="text-3xl font-display font-bold mb-8 text-center">
+                <span class="gradient-text">Education Center</span>
+            </h3>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+                <!-- Trading Tutorials -->
+                <div class="feature-card p-6 rounded-lg">
+                    <h4 class="text-xl font-semibold mb-4 text-white">Interactive Trading Tutorials</h4>
+                    <div class="space-y-4">
+                        <div class="tutorial-step p-4 rounded">
+                            <h5 class="font-medium text-white mb-2">📊 Technical Analysis Basics</h5>
+                            <p class="text-sm text-gray-400 mb-3">Learn to read charts, identify trends, and use technical indicators effectively.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">15 min • Beginner</span>
+                                <button class="btn-primary px-3 py-1 rounded text-xs">Start Tutorial</button>
+                            </div>
+                        </div>
+                        
+                        <div class="tutorial-step p-4 rounded">
+                            <h5 class="font-medium text-white mb-2">🎯 Risk Management</h5>
+                            <p class="text-sm text-gray-400 mb-3">Master position sizing, stop-loss strategies, and portfolio risk assessment.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">25 min • Intermediate</span>
+                                <button class="btn-primary px-3 py-1 rounded text-xs">Start Tutorial</button>
+                            </div>
+                        </div>
+                        
+                        <div class="tutorial-step p-4 rounded">
+                            <h5 class="font-medium text-white mb-2">🤖 Algorithmic Trading</h5>
+                            <p class="text-sm text-gray-400 mb-3">Build and deploy automated trading strategies using our visual builder.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">45 min • Advanced</span>
+                                <button class="btn-primary px-3 py-1 rounded text-xs">Start Tutorial</button>
+                            </div>
+                        </div>
+                        
+                        <div class="tutorial-step p-4 rounded">
+                            <h5 class="font-medium text-white mb-2">💱 Forex Trading Fundamentals</h5>
+                            <p class="text-sm text-gray-400 mb-3">Understand currency pairs, economic indicators, and forex market dynamics.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">30 min • Beginner</span>
+                                <button class="btn-primary px-3 py-1 rounded text-xs">Start Tutorial</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Video Library -->
+                <div class="feature-card p-6 rounded-lg">
+                    <h4 class="text-xl font-semibold mb-4 text-white">Video Library</h4>
+                    <div class="splide" id="video-carousel">
+                        <div class="splide__track">
+                            <ul class="splide__list">
+                                <li class="splide__slide">
+                                    <div class="bg-gray-800 rounded-lg p-4 h-full">
+                                        <div class="bg-gray-700 h-32 rounded mb-3 flex items-center justify-center">
+                                            <span class="text-4xl">▶️</span>
+                                        </div>
+                                        <h5 class="font-medium text-white mb-2">Introduction to Technical Analysis</h5>
+                                        <p class="text-sm text-gray-400 mb-2">Learn the fundamentals of chart reading and pattern recognition.</p>
+                                        <div class="text-xs text-gray-500">12:34 • 15,234 views</div>
+                                    </div>
+                                </li>
+                                
+                                <li class="splide__slide">
+                                    <div class="bg-gray-800 rounded-lg p-4 h-full">
+                                        <div class="bg-gray-700 h-32 rounded mb-3 flex items-center justify-center">
+                                            <span class="text-4xl">▶️</span>
+                                        </div>
+                                        <h5 class="font-medium text-white mb-2">Risk Management Best Practices</h5>
+                                        <p class="text-sm text-gray-400 mb-2">Essential risk management techniques for successful trading.</p>
+                                        <div class="text-xs text-gray-500">18:45 • 8,921 views</div>
+                                    </div>
+                                </li>
+                                
+                                <li class="splide__slide">
+                                    <div class="bg-gray-800 rounded-lg p-4 h-full">
+                                        <div class="bg-gray-700 h-32 rounded mb-3 flex items-center justify-center">
+                                            <span class="text-4xl">▶️</span>
+                                        </div>
+                                        <h5 class="font-medium text-white mb-2">Building Your First Trading Bot</h5>
+                                        <p class="text-sm text-gray-400 mb-2">Step-by-step guide to creating automated trading strategies.</p>
+                                        <div class="text-xs text-gray-500">25:12 • 12,567 views</div>
+                                    </div>
+                                </li>
+                                
+                                <li class="splide__slide">
+                                    <div class="bg-gray-800 rounded-lg p-4 h-full">
+                                        <div class="bg-gray-700 h-32 rounded mb-3 flex items-center justify-center">
+                                            <span class="text-4xl">▶️</span>
+                                        </div>
+                                        <h5 class="font-medium text-white mb-2">Market Psychology & Emotions</h5>
+                                        <p class="text-sm text-gray-400 mb-2">Understanding the psychological aspects of trading.</p>
+                                        <div class="text-xs text-gray-500">22:18 • 9,876 views</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Learning Paths -->
+            <div class="feature-card p-6 rounded-lg">
+                <h4 class="text-xl font-semibold mb-6 text-white">Structured Learning Paths</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">1</span>
+                        </div>
+                        <h5 class="font-semibold text-white mb-2">Beginner Path</h5>
+                        <p class="text-sm text-gray-400 mb-4">Master the fundamentals of trading with our comprehensive beginner curriculum.</p>
+                        <div class="text-xs text-gray-500 mb-4">8 Courses • 4 Hours • Certificate</div>
+                        <button class="btn-primary px-4 py-2 rounded text-sm">Start Learning</button>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">2</span>
+                        </div>
+                        <h5 class="font-semibold text-white mb-2">Intermediate Path</h5>
+                        <p class="text-sm text-gray-400 mb-4">Develop advanced strategies and risk management techniques.</p>
+                        <div class="text-xs text-gray-500 mb-4">12 Courses • 8 Hours • Certificate</div>
+                        <button class="btn-primary px-4 py-2 rounded text-sm">Continue Path</button>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-red-400 to-red-600 flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">3</span>
+                        </div>
+                        <h5 class="font-semibold text-white mb-2">Advanced Path</h5>
+                        <p class="text-sm text-gray-400 mb-4">Become a professional trader with algorithmic strategies and institutional methods.</p>
+                        <div class="text-xs text-gray-500 mb-4">16 Courses • 12 Hours • Master Certificate</div>
+                        <button class="btn-secondary px-4 py-2 rounded text-sm">Locked</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Integration Section -->
+    <section id="api-integration" class="px-6 pb-16">
+        <div class="max-w-7xl mx-auto">
+            <h3 class="text-3xl font-display font-bold mb-8 text-center">
+                <span class="gradient-text">API Integration</span>
+            </h3>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+                <!-- API Features -->
+                <div class="feature-card p-6 rounded-lg">
+                    <h4 class="text-xl font-semibold mb-4 text-white">REST API Endpoints</h4>
+                    <div class="space-y-4">
+                        <div class="bg-gray-800 p-4 rounded">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-mono text-green-400 text-sm">GET /api/v1/market/ticker</span>
+                                <span class="text-xs bg-green-500 text-white px-2 py-1 rounded">LIVE</span>
+                            </div>
+                            <p class="text-xs text-gray-400">Get real-time price data for all trading pairs</p>
+                        </div>
+                        
+                        <div class="bg-gray-800 p-4 rounded">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-mono text-blue-400 text-sm">POST /api/v1/orders</span>
+                                <span class="text-xs bg-green-500 text-white px-2 py-1 rounded">LIVE</span>
+                            </div>
+                            <p class="text-xs text-gray-400">Place new orders with advanced order types</p>
+                        </div>
+                        
+                        <div class="bg-gray-800 p-4 rounded">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-mono text-yellow-400 text-sm">GET /api/v1/portfolio</span>
+                                <span class="text-xs bg-green-500 text-white px-2 py-1 rounded">LIVE</span>
+                            </div>
+                            <p class="text-xs text-gray-400">Access portfolio data and performance metrics</p>
+                        </div>
+                        
+                        <div class="bg-gray-800 p-4 rounded">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-mono text-purple-400 text-sm">GET /api/v1/analytics</span>
+                                <span class="text-xs bg-green-500 text-white px-2 py-1 rounded">LIVE</span>
+                            </div>
+                            <p class="text-xs text-gray-400">Retrieve market analysis and trading signals</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button class="btn-primary w-full py-2 rounded text-sm">View Full Documentation</button>
+                    </div>
+                </div>
+                
+                <!-- WebSocket Support -->
+                <div class="feature-card p-6 rounded-lg">
+                    <h4 class="text-xl font-semibold mb-4 text-white">WebSocket Real-Time Data</h4>
+                    <div class="space-y-4">
+                        <div class="bg-gray-800 p-4 rounded">
+                            <h5 class="font-medium text-white mb-2">Live Price Feeds</h5>
+                            <p class="text-sm text-gray-400 mb-3">Subscribe to real-time price updates for all trading pairs with millisecond latency.</p>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+                                <span class="text-xs text-green-400">Connected • 45ms latency</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-800 p-4 rounded">
+                            <h5 class="font-medium text-white mb-2">Order Book Streams</h5>
+                            <p class="text-sm text-gray-400 mb-3">Get real-time order book updates and market depth information.</p>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+                                <span class="text-xs text-green-400">Streaming • 32ms latency</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-800 p-4 rounded">
+                            <h5 class="font-medium text-white mb-2">Portfolio Updates</h5>
+                            <p class="text-sm text-gray-400 mb-3">Receive instant notifications about portfolio changes and order executions.</p>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+                                <span class="text-xs text-green-400">Active • 28ms latency</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button class="btn-secondary w-full py-2 rounded text-sm">Generate API Key</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Code Examples -->
+            <div class="feature-card p-6 rounded-lg">
+                <h4 class="text-xl font-semibold mb-6 text-white">Code Examples</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h5 class="font-medium text-white mb-3">Python SDK Example</h5>
+                        <div class="bg-gray-900 p-4 rounded text-sm font-mono overflow-x-auto">
+                            <pre class="text-gray-300"><code>import axentia
+
+# Initialize client
+client = axentia.Client(api_key='your_api_key')
+
+# Get market data
+ticker = client.market.get_ticker('BTC/USD')
+print(f"Current Price: ${ticker.price}")
+
+# Place order
+order = client.orders.create(
+    symbol='BTC/USD',
+    side='buy',
+    amount=0.1,
+    order_type='market'
+)
+
+print(f"Order ID: {order.id}")
+print(f"Status: {order.status}")</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h5 class="font-medium text-white mb-3">JavaScript SDK Example</h5>
+                        <div class="bg-gray-900 p-4 rounded text-sm font-mono overflow-x-auto">
+                            <pre class="text-gray-300"><code>const Axentia = require('axentia-sdk');
+
+// Initialize client
+const client = new Axentia.Client({
+  apiKey: 'your_api_key'
+});
+
+// Subscribe to price updates
+client.ws.subscribe('BTC/USD', (data) => {
+  console.log(`Price: $${data.price}`);
+});
+
+// Place automated order
+const order = await client.orders.create({
+  symbol: 'ETH/USD',
+  side: 'sell',
+  amount: 0.5,
+  type: 'limit',
+  price: 2700.00
+});
+
+console.log('Order placed:', order.id);</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black bg-opacity-50 py-8 px-6 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="mb-4">
+                <h3 class="text-2xl font-display font-bold gradient-text mb-2">AXENTIA</h3>
+                <p class="text-gray-400 text-sm">Professional Crypto-Forex Trading Platform</p>
+            </div>
+            <div class="text-gray-500 text-xs">
+                <p>&copy; 2025 Axentia Trading Platform. All rights reserved.</p>
+                <p class="mt-1">Risk Warning: Trading leveraged products involves substantial risk of loss.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Splide carousel for video library
+        document.addEventListener('DOMContentLoaded', function() {
+            new Splide('#video-carousel', {
+                type: 'loop',
+                perPage: 2,
+                perMove: 1,
+                gap: '1rem',
+                breakpoints: {
+                    768: {
+                        perPage: 1,
+                    }
+                }
+            }).mount();
+        });
+        
+        // Smooth scroll to sections
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+        
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    anime({
+                        targets: entry.target,
+                        translateY: [30, 0],
+                        opacity: [0, 1],
+                        duration: 800,
+                        easing: 'easeOutExpo'
+                    });
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            observer.observe(card);
+        });
+    </sc

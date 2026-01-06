@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Trading - Axentia Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <link href="https://unpkg.com/splitting@1.0.6/dist/splitting.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="mobile-responsive.css">
+    <style>
+        :root {
+            --primary-dark: #1a1a1a;
+            --secondary-gold: #d4af37;
+            --tertiary-silver: #c0c0c0;
+            --success-green: #228b22;
+            --danger-red: #dc143c;
+            --neutral-gray: #708090;
+            --background-black: #0d0d0d;
+            --steel-gray: #2a2a2a;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--background-black) 0%, var(--primary-dark) 100%);
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--secondary-gold) 0%, var(--tertiary-silver) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            background: rgba(26, 26, 26, 0.8);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .trading-card {
+            background: linear-gradient(145deg, rgba(42, 42, 42, 0.9) 0%, rgba(26, 26, 26, 0.9) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .trading-card:hover {
+            border-color: var(--secondary-gold);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        }
+        
+        .market-ticker {
+            background: linear-gradient(90deg, var(--background-black) 0%, var(--primary-dark) 50%, var(--background-black) 100%);
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        .price-positive {
+            color: var(--success-green);
+        }
+        
+        .price-negative {
+            color: var(--danger-red);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-gold) 0%, #b8941f 100%);
+            color: var(--background-black);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--steel-gray) 0%, var(--primary-dark) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--secondary-gold);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(42, 42, 42, 0.9) 100%);
+        }
+        
+        .news-ticker {
+            animation: scroll-left 60s linear infinite;
+        }
+        
+        @keyframes scroll-left {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        .chart-container {
+            height: 500px;
+            background: rgba(42, 42, 42, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .order-type-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            background: var(--steel-gray);
+            color: #ffffff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .order-type-btn.active {
+            background: var(--secondary-gold);
+            color: var(--background-black);
+            border-color: var(--secondary-gold);
+        }
+        
+        .order-type-btn:hover {
+            border-color: var(--secondary-gold);
+        }
+        
+        .indicator-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid rgba(112, 128, 144, 0.3);
+            background: rgba(42, 42, 42, 0.8);
+            color: #ffffff;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .indicator-btn.active {
+            background: var(--secondary-gold);
+            color: var(--background-black);
+            border-color: var(--secondary-gold);
+        }
+        
+        .indicator-btn:hover {
+            border-color: var(--secondary-gold);
+        }
+        
+        .position-row {
+            background: rgba(42, 42, 42, 0.6);
+            border-left: 3px solid var(--secondary-gold);
+            transition: all 0.3s ease;
+        }
+        
+        .position-row:hover {
+            background: rgba(212, 175, 55, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .font-display { font-family: 'Playfair Display', serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .font-accent { font-family: 'Crimson Text', serif; }
+        
+        .risk-meter {
+            height: 8px;
+            background: linear-gradient(90deg, var(--success-green) 0%, #ffa500 50%, var(--danger-red) 100%);
+            border-radius: 4px;
+            position: relative;
+        }
+        
+        .risk-indicator {
+            position: absolute;
+            top: -2px;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            border: 2px solid var(--background-black);
+            transition: left 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="glass-nav fixed w-full top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <h1 class="text-2xl font-display font-bold gradient-text">AXENTIA</h1>
+                <span class="text-sm text-gray-400 font-accent">Professional Trading Platform</span>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="index.html" class="text-gray-300 hover:text-yellow-300 transition-colors font-medium">Dashboard</a>
+                <a href="trading.html" class="text-yellow-400 hover:text-yellow-300 transition-colors font-medium border-b-2 border-yellow-400">Trading</a>
+                <a href="portfolio.html" class="text-gray-300 hover:text-yellow-300 transition-colors font-medium">Portfolio</a>
+                <a href="analytics.html" class="text-gray-300 hover:text-yellow-300 transition-colors font-medium">Analytics</a>
+            </div>
+            
+            <!-- Mobile Navigation Links -->
+            <div class="nav-links md:hidden">
+                <a href="index.html" class="block py-2 text-gray-300 hover:text-white transition-colors font-medium">Dashboard</a>
+                <a href="trading.html" class="block py-2 text-yellow-400 hover:text-yellow-300 transition-colors font-medium">Trading</a>
+                <a href="portfolio.html" class="block py-2 text-gray-300 hover:text-white transition-colors font-medium">Portfolio</a>
+                <a href="analytics.html" class="block py-2 text-gray-300 hover:text-white transition-colors font-medium">Analytics</a>
+                <a href="advanced-features.html" class="block py-2 text-gray-300 hover:text-white transition-colors font-medium">Advanced</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-right">
+                    <div class="text-sm font-mono text-green-400">$127,543.21</div>
+                    <div class="text-xs text-gray-400">Portfolio Value</div>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center">
+                    <span class="text-black font-bold text-sm">JD</span>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn md:hidden text-white focus:outline-none touch-target">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Market Ticker -->
+    <div class="market-ticker fixed w-full top-20 z-40 py-2 overflow-hidden">
+        <div class="news-ticker whitespace-nowrap">
+            <span class="inline-block mx-8 text-sm">BTC/USD <span class="price-positive">$43,567.89 (+2.34%)</span></span>
+            <span class="inline-block mx-8 text-sm">ETH/USD <span class="price-positive">$2,654.32 (+1.87%)</span></span>
+            <span class="inline-block mx-8 text-sm">EUR/USD <span class="price-negative">1.0876 (-0.12%)</span></span>
+            <span class="inline-block mx-8 text-sm">GBP/USD <span class="price-positive">1.2654 (+0.45%)</span></span>
+            <span class="inline-block mx-8 text-sm">USD/JPY <span class="price-negative">149.23 (-0.08%)</span></span>
+            <span class="inline-block mx-8 text-sm">XAU/USD <span class="price-positive">$2,034.56 (+0.67%)</span></span>
+        </div>
+    </div>
+
+    <!-- Main Trading Interface -->
+    <section class="pt-32 pb-16 px-6">
+        <div class="max-w-7xl mx-auto">
+            <!-- Trading Header -->
+            <div class="mb-8">
+                <h2 class="text-4xl font-display font-bold mb-2">
+                    <span class="gradient-text">Advanced Trading</span>
+                </h2>
+                <p class="text-gray-400">Professional-grade trading tools and advanced order management</p>
+            </div>
+
+            <!-- Main Trading Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left Panel - Chart and Analysis -->
+                <div class="lg:col-span-2">
+                    <!-- Trading Pair Header -->
+                    <div class="trading-card p-6 rounded-lg mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-2xl font-bold text-white">BTC/USD</h3>
+                                <div class="flex items-center space-x-4">
+                                    <span class="text-3xl font-bold font-mono text-white">$43,567.89</span>
+                                    <span class="price-positive text-lg">+$1,023.45 (+2.34%)</span>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="order-type-btn active" data-type="market">Market</button>
+                                <button class="order-type-btn" data-type="limit">Limit</button>
+                                <button class="order-type-btn" data-type="stop">Stop</button>
+                                <button class="order-type-btn" data-type="oco">OCO</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Technical Indicators -->
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <button class="indicator-btn active" data-indicator="sma">SMA</button>
+                            <button class="indicator-btn" data-indicator="ema">EMA</button>
+                            <button class="indicator-btn active" data-indicator="rsi">RSI</button>
+                            <button class="indicator-btn active" data-indicator="macd">MACD</button>
+                            <button class="indicator-btn" data-indicator="bollinger">Bollinger</button>
+                            <button class="indicator-btn" data-indicator="stochastic">Stochastic</button>
+                            <button class="indicator-btn" data-indicator="williams">Williams %R</button>
+                        </div>
+                        
+                        <!-- Main Chart -->
+                        <div id="advanced-chart" class="chart-container"></div>
+                    </div>
+                    
+                    <!-- Risk Management Panel -->
+                    <div class="trading-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-4 text-white">Risk Management</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-400 mb-2">Position Size</h4>
+                                <div class="space-y-2">
+                                    <input type="number" placeholder="Risk %" class="w-full p-2 bg-gray-800 border border-gray-600 rounded text-white text-sm" value="2">
+                                    <input type="number" placeholder="Stop Loss" class="w-full p-2 bg-gray-800 border border-gray-600 rounded text-white text-sm">
+                                    <input type="number" placeholder="Take Profit" class="w-full p-2 bg-gray-800 border border-gray-600 rounded text-white text-sm">
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-400 mb-2">Risk Analysis</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between">
+                                        <span>Position Size:</span>
+                                        <span class="font-mono text-white">0.15 BTC</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Risk Amount:</span>
+                                        <span class="font-mono text-red-400">$1,250.00</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Potential Profit:</span>
+                                        <span class="font-mono text-green-400">$3,750.00</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Risk/Reward:</span>
+                                        <span class="font-mono text-yellow-400">1:3</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-400 mb-2">Account Risk</h4>
+                                <div class="mb-2">
+                                    <div class="risk-meter">
+                                        <div class="risk-indicator" style="left: 25%;"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs mt-1">
+                                        <span>Low</span>
+                                        <span>Medium</span>
+                                        <span>High</span>
+                                    </div>
+                                </div>
+                                <div class="text-xs text-gray-400">
+                                    Current risk level is within acceptable parameters for your account size.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel - Order Management -->
+                <div class="lg:col-span-1">
+                    <!-- Order Placement -->
+                    <div class="trading-card p-6 rounded-lg mb-6">
+                        <h3 class="text-lg font-semibold mb-4 text-white">Place Order</h3>
+                        
+                        <!-- Order Type Tabs -->
+                        <div class="flex space-x-2 mb-4">
+                            <button class="order-type-btn active flex-1" data-type="buy">Buy</button>
+                            <button class="order-type-btn flex-1" data-type="sell">Sell</button>
+                        </div>
+                        
+                        <!-- Order Form -->
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-1">Amount (BTC)</label>
+                                <input type="number" placeholder="0.00000000" class="w-full p-3 bg-gray-800 border border-gray-600 rounded text-white font-mono">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-1">Price (USD)</label>
+                                <input type="number" placeholder="43,567.89" class="w-full p-3 bg-gray-800 border border-gray-600 rounded text-white font-mono" value="43567.89">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-1">Stop Loss (USD)</label>
+                                <input type="number" placeholder="42,500.00" class="w-full p-3 bg-gray-800 border border-gray-600 rounded text-white font-mono">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-1">Take Profit (USD)</label>
+                                <input type="number" placeholder="45,000.00" class="w-full p-3 bg-gray-800 border border-gray-600 rounded text-white font-mono">
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-2">
+                                <button class="btn-primary py-3 rounded font-medium">Execute Order</button>
+                                <button class="btn-secondary py-3 rounded font-medium">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Active Orders -->
+                    <div class="trading-card p-6 rounded-lg mb-6">
+                        <h3 class="text-lg font-semibold mb-4 text-white">Active Orders</h3>
+                        <div class="space-y-3 max-h-64 overflow-y-auto">
+                            <div class="position-row p-3 rounded">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-white">BTC/USD</span>
+                                    <span class="text-xs bg-blue-500 text-white px-2 py-1 rounded">LIMIT</span>
+                                </div>
+                                <div class="text-sm text-gray-400 mb-1">Buy 0.5 BTC @ $43,200</div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">Created: 14:32:15</span>
+                                    <button class="text-red-400 hover:text-red-300 text-xs">Cancel</button>
+                                </div>
+                            </div>
+                            
+                            <div class="position-row p-3 rounded">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-white">ETH/USD</span>
+                                    <span class="text-xs bg-green-500 text-white px-2 py-1 rounded">STOP</span>
+                                </div>
+                                <div class="text-sm text-gray-400 mb-1">Buy 2.0 ETH @ $2,700</div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">Created: 13:45:32</span>
+                                    <button class="text-red-400 hover:text-red-300 text-xs">Cancel</button>
+                                </div>
+                            </div>
+                            
+                            <div class="position-row p-3 rounded">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="font-medium text-white">EUR/USD</span>
+                                    <span class="text-xs bg-purple-500 text-white px-2 py-1 rounded">OCO</span>
+                                </div>
+                                <div class="text-sm text-gray-400 mb-1">Sell 10K EUR @ 1.0920</div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">Created: 12:18:47</span>
+                                    <button class="text-red-400 hover:text-red-300 text-xs">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Trades -->
+                    <div class="trading-card p-6 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-4 text-white">Recent Trades</h3>
+                        <div class="space-y-2 max-h-48 overflow-y-auto">
+                            <div class="flex justify-between text-sm py-1">
+                                <span class="text-gray-400">14:25:33</span>
+                                <span class="text-white">BTC/USD</span>
+                                <span class="font-mono text-green-400">+$267.50</span>
+                            </div>
+                            <div class="flex justify-between text-sm py-1">
+                                <span class="text-gray-400">13:52:18</span>
+                                <span class="text-white">ETH/USD</span>
+                                <span class="font-mono text-green-400">+$135.80</span>
+                            </div>
+                            <div class="flex justify-between text-sm py-1">
+                                <span class="text-gray-400">12:45:42</span>
+                                <span class="text-white">EUR/USD</span>
+                                <span class="font-mono text-red-400">-$89.20</span>
+                            </div>
+                            <div class="flex justify-between text-sm py-1">
+                                <span class="text-gray-400">11:33:15</span>
+                                <span class="text-white">GBP/USD</span>
+                                <span class="font-mono text-green-400">+$156.30</span>
+                            </div>
+                            <div class="flex justify-between text-sm py-1">
+                                <span class="text-gray-400">10:28:47</span>
+                                <span class="text-white">XAU/USD</span>
+                                <span class="font-mono text-green-400">+$342.10</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black bg-opacity-50 py-8 px-6 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="mb-4">
+                <h3 class="text-2xl font-display font-bold gradient-text mb-2">AXENTIA</h3>
+                <p class="text-gray-400 text-sm">Professional Crypto-Forex Trading Platform</p>
+            </div>
+            <div class="text-gray-500 text-xs">
+                <p>&copy; 2025 Axentia Trading Platform. All rights reserved.</p>
+                <p class="mt-1">Risk Warning: Trading leveraged products involves substantial risk of loss.</p>
+            </div>
+        </div>
+    </foo

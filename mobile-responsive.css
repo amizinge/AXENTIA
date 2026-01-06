@@ -1,0 +1,468 @@
+/* AXENTIA Mobile Responsive Enhancements */
+
+/* Mobile Breakpoints */
+@media (max-width: 768px) {
+    /* Navigation Mobile Optimizations */
+    .glass-nav {
+        padding: 0.75rem 1rem;
+    }
+    
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(26, 26, 26, 0.95);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        padding: 1rem;
+        border-top: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    
+    .nav-links.active {
+        display: flex;
+    }
+    
+    .mobile-menu-btn {
+        display: block !important;
+    }
+    
+    /* Hero Section Mobile */
+    .hero-section {
+        padding-top: 6rem !important;
+        padding-bottom: 2rem !important;
+    }
+    
+    .hero-section h2 {
+        font-size: 2.5rem !important;
+        line-height: 1.2;
+    }
+    
+    .hero-section .text-5xl,
+    .hero-section .text-7xl {
+        font-size: 2.5rem !important;
+    }
+    
+    .typing-container p {
+        font-size: 1rem !important;
+    }
+    
+    /* Market Ticker Mobile */
+    .market-ticker {
+        top: 4rem !important;
+        padding: 0.5rem 0;
+    }
+    
+    .news-ticker {
+        animation: scroll-ticker 30s linear infinite;
+    }
+    
+    @keyframes scroll-ticker {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
+    }
+    
+    /* Portfolio Cards Mobile */
+    .grid-cols-1.md\\:grid-cols-4 {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+    
+    .metric-card {
+        padding: 1rem !important;
+    }
+    
+    .metric-card .text-2xl {
+        font-size: 1.25rem !important;
+    }
+    
+    /* Trading Interface Mobile */
+    .grid-cols-1.lg\\:grid-cols-4 {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .lg\\:col-span-2,
+    .lg\\:col-span-1 {
+        grid-column: span 1 !important;
+    }
+    
+    /* Order Panel Mobile */
+    .order-panel {
+        order: -1;
+        margin-bottom: 1rem;
+    }
+    
+    .order-type-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+    }
+    
+    .price-display .text-3xl {
+        font-size: 1.5rem !important;
+    }
+    
+    /* Chart Container Mobile */
+    .chart-container {
+        height: 250px !important;
+    }
+    
+    #main-chart,
+    #advanced-chart {
+        height: 250px !important;
+    }
+    
+    /* Market Selector Mobile */
+    .market-item {
+        padding: 0.75rem !important;
+    }
+    
+    .market-item .font-mono {
+        font-size: 0.875rem;
+    }
+    
+    /* Positions Table Mobile */
+    .positions-table {
+        font-size: 0.75rem;
+    }
+    
+    .positions-table th,
+    .positions-table td {
+        padding: 0.5rem 0.25rem !important;
+    }
+    
+    .positions-table .hidden-mobile {
+        display: none;
+    }
+    
+    /* Buttons Mobile */
+    .btn-primary,
+    .btn-secondary {
+        padding: 0.75rem 1rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    /* Modal Mobile */
+    .modal-content {
+        margin: 1rem;
+        padding: 1.5rem !important;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .modal-content h3 {
+        font-size: 1.25rem !important;
+    }
+    
+    /* Footer Mobile */
+    footer {
+        padding: 2rem 1rem !important;
+    }
+    
+    .footer-grid {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+    }
+    
+    /* Advanced Features Mobile */
+    .feature-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .bot-card,
+    .trader-card,
+    .tutorial-card {
+        padding: 1rem !important;
+    }
+    
+    /* Social Trading Mobile */
+    .social-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .stat-item {
+        text-align: center;
+    }
+    
+    /* API Documentation Mobile */
+    .api-endpoint {
+        padding: 1rem !important;
+    }
+    
+    .code-block {
+        font-size: 0.75rem;
+        padding: 0.75rem !important;
+    }
+    
+    /* Touch-Friendly Controls */
+    .touch-target {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .touch-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        border-radius: 0.5rem;
+    }
+    
+    /* Swipe Indicators */
+    .swipe-indicator {
+        display: block !important;
+        text-align: center;
+        padding: 0.5rem;
+        color: var(--secondary-gold);
+        font-size: 0.75rem;
+    }
+    
+    /* Mobile Navigation Tabs */
+    .mobile-tabs {
+        display: flex !important;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    
+    .mobile-tabs::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .mobile-tab {
+        flex-shrink: 0;
+        padding: 0.75rem 1rem;
+        margin-right: 0.5rem;
+        background: rgba(42, 42, 42, 0.9);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 0.5rem;
+        color: #ffffff;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .mobile-tab.active {
+        background: var(--secondary-gold);
+        color: var(--background-black);
+        border-color: var(--secondary-gold);
+    }
+    
+    /* Collapsible Sections */
+    .collapsible-header {
+        cursor: pointer;
+        position: relative;
+    }
+    
+    .collapsible-header::after {
+        content: '▼';
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: transform 0.3s ease;
+    }
+    
+    .collapsible-header.collapsed::after {
+        transform: translateY(-50%) rotate(-90deg);
+    }
+    
+    .collapsible-content {
+        max-height: 1000px;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+    
+    .collapsible-content.collapsed {
+        max-height: 0;
+    }
+    
+    /* Mobile Portfolio Summary */
+    .portfolio-summary-mobile {
+        display: block !important;
+        background: linear-gradient(145deg, rgba(42, 42, 42, 0.9) 0%, rgba(26, 26, 26, 0.9) 100%);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .portfolio-summary-desktop {
+        display: none !important;
+    }
+    
+    /* Mobile Order Entry */
+    .order-entry-mobile {
+        display: block !important;
+    }
+    
+    .order-entry-desktop {
+        display: none !important;
+    }
+    
+    /* Quick Action Buttons */
+    .quick-actions {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    
+    .quick-action-btn {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+        text-align: center;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .quick-buy {
+        background: var(--success-green);
+        color: white;
+    }
+    
+    .quick-sell {
+        background: var(--danger-red);
+        color: white;
+    }
+    
+    .quick-close {
+        background: var(--neutral-gray);
+        color: white;
+    }
+    
+    .quick-reverse {
+        background: var(--secondary-gold);
+        color: var(--background-black);
+    }
+}
+
+/* Tablet Optimizations */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .grid-cols-1.md\\:grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    .grid-cols-1.lg\\:grid-cols-4 {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+    
+    .lg\\:col-span-2 {
+        grid-column: span 2 !important;
+    }
+    
+    .chart-container {
+        height: 300px !important;
+    }
+}
+
+/* Desktop Enhancements */
+@media (min-width: 1025px) {
+    .mobile-menu-btn {
+        display: none !important;
+    }
+    
+    .portfolio-summary-mobile {
+        display: none !important;
+    }
+    
+    .portfolio-summary-desktop {
+        display: block !important;
+    }
+    
+    .order-entry-mobile {
+        display: none !important;
+    }
+    
+    .order-entry-desktop {
+        display: block !important;
+    }
+    
+    .swipe-indicator {
+        display: none !important;
+    }
+}
+
+/* Animation Classes */
+.slide-in-left {
+    animation: slideInLeft 0.3s ease-out;
+}
+
+.slide-in-right {
+    animation: slideInRight 0.3s ease-out;
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Performance Optimizations */
+.will-change-transform {
+    will-change: transform;
+}
+
+.hardware-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .trading-card {
+        border-width: 2px;
+    }
+    
+    .btn-primary {
+        border: 2px solid var(--background-black);
+    }
+}
+
+/* Dark Mode Preferences */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-dark: #0d0d0d;
+        --background-black: #000000;
+    }
+}
